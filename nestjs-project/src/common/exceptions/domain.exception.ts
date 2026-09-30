@@ -48,3 +48,37 @@ export class TokenReuseDetectedException extends DomainException {
     );
   }
 }
+
+export class VideoNotFoundException extends DomainException {
+  constructor() {
+    super('VIDEO_NOT_FOUND', 404, 'Video not found');
+  }
+}
+
+export class VideoNotReadyException extends DomainException {
+  constructor() {
+    super('VIDEO_NOT_READY', 409, 'Video is not ready for playback');
+  }
+}
+
+export class UnauthorizedVideoAccessException extends DomainException {
+  constructor() {
+    super(
+      'UNAUTHORIZED_VIDEO_ACCESS',
+      403,
+      'You do not have permission to manage this video',
+    );
+  }
+}
+
+export class InvalidUploadPartException extends DomainException {
+  constructor(message = 'Invalid part number or empty part list') {
+    super('INVALID_UPLOAD_PART', 400, message);
+  }
+}
+
+export class ChannelNotFoundException extends DomainException {
+  constructor() {
+    super('CHANNEL_NOT_FOUND', 404, 'Channel not found for user');
+  }
+}
