@@ -14,6 +14,7 @@ import { DomainExceptionFilter } from '../src/common/filters/domain-exception.fi
 import { ValidationExceptionFilter } from '../src/common/filters/validation-exception.filter';
 import { cleanAllTables } from '../src/test/create-test-data-source';
 import { Readable } from 'stream';
+import { AuthService } from '../src/auth/auth.service';
 
 describe('Videos (e2e)', () => {
   let app: INestApplication<App>;
@@ -127,7 +128,7 @@ describe('Videos (e2e)', () => {
       .send({ email: 'creator@streamtube.test', password: 'password123' });
 
     // Fallback if login uses argon2 password hash
-    const authService = app.get('AuthService' as any);
+    const authService = app.get(AuthService);
     if (authService && typeof authService.generateTokens === 'function') {
       const tokens = await authService.generateTokens(user.id, user.email);
       userToken = tokens.access_token;
