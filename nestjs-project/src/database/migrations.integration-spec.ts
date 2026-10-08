@@ -40,6 +40,9 @@ describe('Database migrations (integration)', () => {
         dataSource.query(`DROP TABLE IF EXISTS "${table}" CASCADE`),
       ),
       dataSource.query(`DROP TABLE IF EXISTS "migrations" CASCADE`),
+      dataSource.query(
+        `DROP TYPE IF EXISTS "verification_tokens_type_enum" CASCADE`,
+      ),
       dataSource.query(`DROP TYPE IF EXISTS "videos_status_enum" CASCADE`),
     ]);
   });
