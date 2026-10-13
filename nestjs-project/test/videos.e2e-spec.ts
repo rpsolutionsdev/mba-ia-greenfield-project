@@ -14,6 +14,7 @@ import { DomainExceptionFilter } from '../src/common/filters/domain-exception.fi
 import { ValidationExceptionFilter } from '../src/common/filters/validation-exception.filter';
 import { cleanAllTables } from '../src/test/create-test-data-source';
 import { Readable } from 'stream';
+import { JwtService } from '@nestjs/jwt';
 
 describe('Videos (e2e)', () => {
   let app: INestApplication<App>;
@@ -23,6 +24,7 @@ describe('Videos (e2e)', () => {
   let channelRepo: Repository<Channel>;
   let storageService: StorageService;
   let videoQueueService: VideoQueueService;
+  let jwtService: JwtService;
 
   let userToken: string;
   let _userId: string;
@@ -56,6 +58,7 @@ describe('Videos (e2e)', () => {
     channelRepo = dataSource.getRepository(Channel);
     storageService = moduleFixture.get(StorageService);
     videoQueueService = moduleFixture.get(VideoQueueService);
+    jwtService = moduleFixture.get(JwtService);
 
     // Mock storage operations to avoid external network dependencies during HTTP e2e tests
     jest
@@ -121,19 +124,10 @@ describe('Videos (e2e)', () => {
     });
     channelId = channel.id;
 
-    // Login primary user
-    const loginRes = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({ email: 'creator@streamtube.test', password: 'password123' });
-
-    // Fallback if login uses argon2 password hash
-    const authService = app.get('AuthService' as any);
-    if (authService && typeof authService.generateTokens === 'function') {
-      const tokens = await authService.generateTokens(user.id, user.email);
-      userToken = tokens.access_token;
-    } else {
-      userToken = loginRes.body.access_token;
-    }
+    userToken = jwtService.sign({
+      sub: user.id,
+      email: user.email,
+    });
 
     // Setup second user and channel
     const otherUser = await userRepo.save({
@@ -149,11 +143,10 @@ describe('Videos (e2e)', () => {
       user_id: otherUser.id,
     });
 
-    const otherTokens = await authService.generateTokens(
-      otherUser.id,
-      otherUser.email,
-    );
-    otherUserToken = otherTokens.access_token;
+    otherUserToken = jwtService.sign({
+      sub: otherUser.id,
+      email: otherUser.email,
+    });
   });
 
   describe('Authentication & Authorization Guards', () => {

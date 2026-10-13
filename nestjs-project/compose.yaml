@@ -17,6 +17,20 @@ services:
       redis:
         condition: service_healthy
 
+  worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/home/node/app
+    depends_on:
+      db:
+        condition: service_healthy
+      storage:
+        condition: service_started
+      redis:
+        condition: service_healthy
+
   db:
     image: postgres:17
     ports:

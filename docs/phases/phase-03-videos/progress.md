@@ -6,7 +6,7 @@
 ### SI-03.1 — Dependencies, Configuration Namespaces, and Docker Compose Infrastructure
 - **Status:** completed
 - **Tests:** 4/4 passing (storage.config.spec.ts, queue.config.spec.ts)
-- **Observations:** Installed @aws-sdk/client-s3, @aws-sdk/s3-request-presigner, @nestjs/bullmq, bullmq, ioredis, fluent-ffmpeg, @types/fluent-ffmpeg, nanoid@3.3.8. Created storage.config.ts and queue.config.ts, updated env.validation.ts, .env.example, and compose.yaml with storage (MinIO) and redis services.
+- **Observations:** Installed @aws-sdk/client-s3, @aws-sdk/s3-request-presigner, @nestjs/bullmq, bullmq, ioredis, fluent-ffmpeg, @types/fluent-ffmpeg, nanoid@3.3.8. Created storage.config.ts and queue.config.ts, updated env.validation.ts, .env.example, and compose.yaml with storage (MinIO), redis, and dedicated worker container services along with src/worker.ts entrypoint.
 
 ### SI-03.2 — Video Entity, Status Enum, and TypeORM Migration
 - **Status:** completed

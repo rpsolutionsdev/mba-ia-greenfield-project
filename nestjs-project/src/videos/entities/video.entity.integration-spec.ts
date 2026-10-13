@@ -43,16 +43,16 @@ describe('Video Entity (integration)', () => {
 
   afterAll(async () => {
     if (dataSource && dataSource.isInitialized) {
-      await videoRepo.delete({});
-      await channelRepo.delete({});
-      await userRepo.delete({});
+      await videoRepo.clear();
+      await channelRepo.clear();
+      await userRepo.clear();
       await dataSource.destroy();
     }
   });
 
   afterEach(async () => {
     if (dataSource && dataSource.isInitialized) {
-      await videoRepo.delete({});
+      await videoRepo.clear();
     }
   });
 
