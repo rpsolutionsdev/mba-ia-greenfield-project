@@ -18,6 +18,7 @@ Verify service readiness:
 
 Services in `compose.yaml`:
 - `nestjs-api` — NestJS API, port `3000`
+- `worker` — Dedicated Video Worker process for background processing (FFmpeg/FFprobe/BullMQ)
 - `db` — PostgreSQL 17, port `5432`, database `streamtube`, user/password `streamtube`
 - `mailpit` — SMTP port `1025`, Web UI port `8025`
 - `storage` — MinIO Object Storage, API port `9000`, Console port `9001`
@@ -31,6 +32,7 @@ Services in `compose.yaml`:
 
 ```bash
 npm run start:dev                        # Dev server with hot-reload
+npm run start:worker                     # Dedicated video worker process
 npm run build                            # Compile to dist/
 npm run start:prod                       # Run compiled build
 

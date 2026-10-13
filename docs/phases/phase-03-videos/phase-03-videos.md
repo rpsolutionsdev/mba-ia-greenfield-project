@@ -42,6 +42,8 @@ Implementar a arquitetura completa de upload e processamento assíncrono de víd
 - Atualizar `compose.yaml`:
   - Adicionar serviço `storage` (imagem `minio/minio`, comando `server /data --console-address ":9001"`, portas `9000:9000` e `9001:9001`, variáveis de ambiente `MINIO_ROOT_USER=minioadmin`, `MINIO_ROOT_PASSWORD=minioadmin`).
   - Adicionar serviço `redis` (imagem `redis:7-alpine`, porta `6379:6379`).
+  - Adicionar serviço `worker` dedicado para processamento assíncrono em segundo plano (imagem baseada em `Dockerfile.dev` com `ffmpeg` e `ffprobe`, volumes sincronizados, dependendo de `db`, `storage` e `redis`).
+  - Criar `src/worker.ts` e scripts no `package.json` (`start:worker`, `start:worker:dev`, `start:worker:prod`) para execução do container worker isolado da API.
   - Atualizar `depends_on` do serviço `nestjs-api` para incluir `storage` e `redis`.
 
 **Tests:**
@@ -501,6 +503,7 @@ graph TD
 1. **Infraestrutura no `compose.yaml`:**
    - Serviço `storage` (MinIO) com console na porta 9001 e API S3 na porta 9000.
    - Serviço `redis` na porta 6379.
+   - Serviço `worker` dedicado com FFmpeg/BullMQ executando em container isolado.
    - Configurações de conexão inter-container usando os nomes de host do compose (`storage`, `redis`, `db`).
 2. **Entidade & Migration de Banco de Dados:**
    - Tabela `videos` com foreign key para `channels`, enum de status e índices otimizados.
