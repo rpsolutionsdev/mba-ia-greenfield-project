@@ -73,27 +73,35 @@ describe('Videos (e2e)', () => {
     jest.spyOn(storageService, 'uploadBuffer').mockResolvedValue(undefined);
     jest
       .spyOn(storageService, 'getObjectStream')
-      .mockImplementation(async (_key, range) => {
+      .mockImplementation(async (key, range) => {
+        const content = Buffer.from('fake-video-content-stream');
         const stream = new Readable({
           read() {
-            this.push(Buffer.from('fake-video-content-stream'));
+            this.push(content);
             this.push(null);
           },
         });
+        let contentType = 'video/mp4';
+        if (key.includes('thumb') || key.endsWith('.jpg')) {
+          contentType = 'image/jpeg';
+        } else if (key.includes('download')) {
+          contentType = 'application/octet-stream';
+        }
+
         if (range) {
           return {
             stream,
-            contentLength: 100,
+            contentLength: content.length,
             contentRange: 'bytes 0-99/1000',
             acceptRanges: 'bytes',
-            contentType: 'video/mp4',
+            contentType,
           };
         }
         return {
           stream,
-          contentLength: 1000,
+          contentLength: content.length,
           acceptRanges: 'bytes',
-          contentType: 'video/mp4',
+          contentType,
         };
       });
 
