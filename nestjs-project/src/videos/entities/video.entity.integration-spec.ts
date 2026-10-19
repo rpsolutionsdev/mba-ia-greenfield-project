@@ -5,7 +5,10 @@ import { User } from '../../users/entities/user.entity';
 import { RefreshToken } from '../../auth/entities/refresh-token.entity';
 import { VerificationToken } from '../../auth/entities/verification-token.entity';
 import { VideoStatus } from '../enums/video-status.enum';
-import { createTestDataSource } from '../../test/create-test-data-source';
+import {
+  cleanAllTables,
+  createTestDataSource,
+} from '../../test/create-test-data-source';
 
 describe('Video Entity (integration)', () => {
   let dataSource: DataSource;
@@ -43,16 +46,14 @@ describe('Video Entity (integration)', () => {
 
   afterAll(async () => {
     if (dataSource && dataSource.isInitialized) {
-      await videoRepo.clear();
-      await channelRepo.clear();
-      await userRepo.clear();
+      await cleanAllTables(dataSource);
       await dataSource.destroy();
     }
   });
 
   afterEach(async () => {
     if (dataSource && dataSource.isInitialized) {
-      await videoRepo.clear();
+      await dataSource.query('DELETE FROM "videos"');
     }
   });
 
